@@ -1,0 +1,6 @@
+﻿*/.vs/
+*/.vscode/
+Code/obj
+CompiledCode/
+Temp/
+UserSettings.json

@@ -1,0 +1,7 @@
+{
+    "combineSubmeshes": true,
+    "extractMaterialsAndTextures": true,
+    "removeRedundantMaterials": true,
+    "srcPath": "Raw//aeroplane.fbx",
+    "uniformScale": 0.5
+}

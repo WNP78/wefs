@@ -1,0 +1,5 @@
+{
+    "removeRedundantMaterials": true,
+    "srcPath": "Raw/BevelledCube.fbx",
+    "uniformScale": 1.0
+}

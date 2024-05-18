@@ -1,0 +1,8 @@
+{
+  "projectName": "wefs",
+  "copyDirectories": [
+    "Materials",
+    "Prefabs",
+    "Scenes"
+  ]
+}
