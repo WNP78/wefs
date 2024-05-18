@@ -1,5 +1,6 @@
 ﻿using System;
 using WorldsEngine;
+using WorldsEngine.ECS;
 using WorldsEngine.Math;
 
 namespace wefs;
@@ -18,6 +19,15 @@ public static class MathW
     public static Vector3 GetVelocityAtPoint(this RigidBody rb, Vector3 worldPoint)
     {
         return rb.Velocity + Vector3.Cross(rb.AngularVelocity, worldPoint - rb.WorldSpaceCenterOfMass.Position);
+    }
+
+    public static void AddForceAtPositionLocal(this RigidBody rb, Vector3 force, Vector3 localPosition, ForceMode mode = ForceMode.Force, bool autowake = true)
+    {
+        // velocity = cross(angVel, offset)
+        // force = cross(torque, offset)
+        // torque = cross(offset, force)
+        rb.AddForce(force, mode, autowake);
+        rb.AddTorque(Vector3.Cross(rb.Pose.Rotation * localPosition, force), mode, autowake);
     }
 
     public static Vector3 Project(Vector3 vector, Vector3 line)

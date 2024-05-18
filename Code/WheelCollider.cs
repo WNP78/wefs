@@ -13,10 +13,10 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
     public Entity Rigidbody;
     public float Radius;
     public float TurnAngle;
+    public float BrakeTorque;
+
     public float SpringForce;
     public float DamperForce;
-
-    public float MaxBrakeTorque;
 
     public float ForwardExtremumSlip = 0.4f;
     public float ForwardExtremumValue = 1f;
@@ -99,12 +99,8 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
             this.IsGrounded = false;
         }
 
-        this.RotationSpeed = MathW.MoveTowards(this.RotationSpeed, 0f, MathF.Abs(this.RotationSpeed) * this.AngularDragFactor * Time.DeltaTime);
-    }
-
-    private static float EvaluateSlipCurve(float slip, Vector4 curve)
-    {
-        return EvaluateSlipCurve(slip, curve.x, curve.y, curve.z, curve.w);
+        float brakeTorque = this.BrakeTorque + (this.AngularDragFactor * MathF.Abs(this.RotationSpeed));
+        this.RotationSpeed = MathW.MoveTowards(this.RotationSpeed, 0f, brakeTorque * Time.DeltaTime);
     }
 
     private static float EvaluateSlipCurve(float slip, float extremumSlip, float extremumValue, float asymptoteSlip, float asymptoteValue)
@@ -116,6 +112,7 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
 
         float result;
 
+        // https://www.desmos.com/calculator/gtyayrytl3
         if (slip <= extremumSlip)
         {
             float t = slip / extremumSlip;

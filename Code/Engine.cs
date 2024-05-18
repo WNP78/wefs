@@ -1,13 +1,14 @@
 ﻿using System;
 using WorldsEngine;
 using WorldsEngine.ECS;
+using WorldsEngine.Editor;
 using WorldsEngine.Input;
 using WorldsEngine.Math;
 
 namespace wefs;
 
 [Component]
-public class Engine : Component, IUpdateableComponent, ISimulatedComponent
+public class Engine : Component, IUpdateableComponent, ISimulatedComponent, IComponentGizmoDrawer
 {
     public float throttle;
 
@@ -27,7 +28,18 @@ public class Engine : Component, IUpdateableComponent, ISimulatedComponent
     {
         if (this.Rigidbody.IsValid && this.Rigidbody.TryGetComponent<RigidBody>(out var rb))
         {
-            rb.AddForce(this.Entity.Transform.Forward * (this.maxPower * this.throttle));
+            Vector3 localPos;
+            if (this.Entity.Parent == this.Rigidbody)
+                localPos = this.Entity.LocalTransform.Position;
+            else
+                localPos = this.Rigidbody.Transform.InverseTransformPoint(this.Entity.Transform.Position);
+
+            rb.AddForceAtPositionLocal(this.Entity.Transform.Forward * (this.maxPower * this.throttle), localPos);
         }
+    }
+
+    public void DrawGizmos()
+    {
+        DebugShapes.DrawLine(this.Entity.Transform.Position, this.Entity.Transform.Position + this.throttle * this.Entity.Transform.Forward, new(0f, 1f, 1f, 1f));
     }
 }
