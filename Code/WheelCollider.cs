@@ -16,10 +16,23 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
     public float SpringForce;
     public float DamperForce;
 
-    public Vector4 ForwardSlipCurve;
-    public Vector4 SidewaysSlipCurve;
+    public float MaxBrakeTorque;
+
+    public float ForwardExtremumSlip = 0.4f;
+    public float ForwardExtremumValue = 1f;
+    public float ForwardAsymptoteSlip = 0.8f;
+    public float ForwardAsymptoteValue = 0.5f;
+    
+    public float SidewaysExtremumSlip = 0.4f;
+    public float SidewaysExtremumValue = 1f;
+    public float SidewaysAsymptoteSlip = 0.8f;
+    public float SidewaysAsymptoteValue = 0.5f;
 
     public bool IsGrounded;
+
+    public float RotationSpeed;
+    public float AngularMassDensity = 0.1f;
+    public float AngularDragFactor = 0.1f;
 
     private float _lastPenetration;
 
@@ -53,16 +66,40 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
         {
             float penetration = (2f * this.Radius) - hit.Distance;
             float rate = (penetration - this._lastPenetration) / Time.DeltaTime;
-            float force = (penetration * this.SpringForce) + (rate * this.DamperForce);
-            rb.AddForceAtPosition(force * hit.Normal, hit.WorldHitPos);
+            float contactForce = (penetration * this.SpringForce) + (rate * this.DamperForce);
+            Vector3 totalForce = contactForce * hit.Normal;
             this._lastPenetration = penetration;
             this.IsGrounded = true;
+
+            var velocity = rb.GetVelocityAtPoint(hit.WorldHitPos);
+            if (hit.HitEntity.TryGetComponent<RigidBody>(out var hitRB))
+            {
+                velocity -= hitRB.GetVelocityAtPoint(hit.WorldHitPos);
+            }
+
+            var forwards = MathW.ProjectOnPlane(wheelRotation * Vector3.Forward, hit.Normal).Normalized;
+            var right = Vector3.Cross(forwards, hit.Normal);
+
+            float sidewaysSlip = Vector3.Dot(velocity, right);
+            float sidewaysForce = contactForce * EvaluateSlipCurve(-sidewaysSlip, this.SidewaysExtremumSlip, this.SidewaysExtremumValue, this.SidewaysAsymptoteSlip, this.SidewaysAsymptoteValue);
+            totalForce += right * sidewaysForce;
+
+            float forwardSlip = Vector3.Dot(velocity, forwards);
+            forwardSlip -= this.RotationSpeed * this.Radius;
+            float forwardForce = contactForce * EvaluateSlipCurve(-forwardSlip, this.ForwardExtremumSlip, this.ForwardExtremumValue, this.ForwardAsymptoteSlip, this.ForwardAsymptoteValue);
+
+            totalForce += forwards * forwardForce;
+            this.RotationSpeed -= forwardForce * Time.DeltaTime / (this.AngularMassDensity * this.Radius); // force * radius / (density * radius^2)
+
+            rb.AddForceAtPosition(totalForce, hit.WorldHitPos);
         }
         else
         {
             this._lastPenetration = 0f;
             this.IsGrounded = false;
         }
+
+        this.RotationSpeed = MathW.MoveTowards(this.RotationSpeed, 0f, MathF.Abs(this.RotationSpeed) * this.AngularDragFactor * Time.DeltaTime);
     }
 
     private static float EvaluateSlipCurve(float slip, Vector4 curve)

@@ -1,6 +1,4 @@
-﻿
-using System;
-using WorldsEngine;
+﻿using WorldsEngine;
 using WorldsEngine.ECS;
 using WorldsEngine.Input;
 using WorldsEngine.Math;

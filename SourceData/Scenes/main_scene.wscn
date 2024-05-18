@@ -441,24 +441,22 @@
                 ]
             },
             "wefs.WheelCollider": {
+                "AngularMassDensity": 5,
                 "DamperForce": 800,
-                "ForwardSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "ForwardAsymptoteSlip": 0.8,
+                "ForwardAsymptoteValue": 0.5,
+                "ForwardExtremumSlip": 0.4,
+                "ForwardExtremumValue": 1,
                 "IsGrounded": false,
                 "Radius": 0.2,
                 "Rigidbody": {
                     "ID": 3
                 },
-                "SidewaysSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "RotationSpeed": 0,
+                "SidewaysAsymptoteSlip": 0.8,
+                "SidewaysAsymptoteValue": 0.5,
+                "SidewaysExtremumSlip": 0.4,
+                "SidewaysExtremumValue": 1,
                 "SpringForce": 5000,
                 "TurnAngle": 0
             },
@@ -473,7 +471,7 @@
                 "position": [
                     1.3317773342132568,
                     -0.640999972820282,
-                    -0.41399863362312317
+                    -0.4139810800552368
                 ],
                 "rotation": [
                     -1.1175870007207322e-08,
@@ -494,7 +492,7 @@
                 "position": [
                     1.3317772150039673,
                     0.2440597414970398,
-                    -0.4139985740184784
+                    -0.41398102045059204
                 ],
                 "rotation": [
                     5.661249247168598e-12,
@@ -509,24 +507,22 @@
                 ]
             },
             "wefs.WheelCollider": {
+                "AngularMassDensity": 5,
                 "DamperForce": 800,
-                "ForwardSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "ForwardAsymptoteSlip": 0.8,
+                "ForwardAsymptoteValue": 0.5,
+                "ForwardExtremumSlip": 0.4,
+                "ForwardExtremumValue": 1,
                 "IsGrounded": false,
                 "Radius": 0.2,
                 "Rigidbody": {
                     "ID": 3
                 },
-                "SidewaysSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "RotationSpeed": 0,
+                "SidewaysAsymptoteSlip": 0.8,
+                "SidewaysAsymptoteValue": 0.5,
+                "SidewaysExtremumSlip": 0.4,
+                "SidewaysExtremumValue": 1,
                 "SpringForce": 5000,
                 "TurnAngle": 0
             }
@@ -537,7 +533,7 @@
                 "position": [
                     -1.3320000171661377,
                     -0.640999972820282,
-                    -0.4139828383922577
+                    -0.4139719307422638
                 ],
                 "rotation": [
                     -1.1175870007207322e-08,
@@ -558,7 +554,7 @@
                 "position": [
                     -1.3319998979568481,
                     0.2440597414970398,
-                    -0.4139827787876129
+                    -0.4139719009399414
                 ],
                 "rotation": [
                     5.661249247168598e-12,
@@ -573,24 +569,22 @@
                 ]
             },
             "wefs.WheelCollider": {
+                "AngularMassDensity": 5,
                 "DamperForce": 800,
-                "ForwardSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "ForwardAsymptoteSlip": 0.8,
+                "ForwardAsymptoteValue": 0.5,
+                "ForwardExtremumSlip": 0.4,
+                "ForwardExtremumValue": 1,
                 "IsGrounded": false,
                 "Radius": 0.2,
                 "Rigidbody": {
                     "ID": 3
                 },
-                "SidewaysSlipCurve": {
-                    "w": 0,
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                },
+                "RotationSpeed": 0,
+                "SidewaysAsymptoteSlip": 0.8,
+                "SidewaysAsymptoteValue": 0.5,
+                "SidewaysExtremumSlip": 0.4,
+                "SidewaysExtremumValue": 1,
                 "SpringForce": 5000,
                 "TurnAngle": 0
             }
