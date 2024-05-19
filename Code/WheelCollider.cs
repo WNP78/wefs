@@ -73,9 +73,8 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
 
             var velocity = rb.GetVelocityAtPoint(hit.WorldHitPos);
             if (hit.HitEntity.TryGetComponent<RigidBody>(out var hitRB))
-            {
                 velocity -= hitRB.GetVelocityAtPoint(hit.WorldHitPos);
-            }
+            else hitRB = null;
 
             var forwards = MathW.ProjectOnPlane(wheelRotation * Vector3.Forward, hit.Normal).Normalized;
             var right = Vector3.Cross(forwards, hit.Normal);
@@ -92,6 +91,7 @@ public class WheelCollider : Component, IComponentGizmoDrawer, ISimulatedCompone
             this.RotationSpeed -= forwardForce * Time.DeltaTime / (this.AngularMassDensity * this.Radius); // force * radius / (density * radius^2)
 
             rb.AddForceAtPosition(totalForce, hit.WorldHitPos);
+            hitRB?.AddForceAtPosition(-totalForce, hit.WorldHitPos);
         }
         else
         {
