@@ -42,6 +42,14 @@ public class ControlSurface : Component, IUpdateableComponent, IComponentGizmoDr
         _ => default,
     };
 
+    public (ControllerAxis Axis, bool Invert)? ControllerBind => this.inputAxis switch
+    {
+        InputAxis.Pitch => (ControllerAxis.RightY, true),
+        InputAxis.Roll => (ControllerAxis.RightX, false),
+        InputAxis.Yaw => (ControllerAxis.LeftX, false),
+        _ => null,
+    };
+
     public void DrawGizmos()
     {
         if (!this.Entity.Parent.IsValid || !this.Entity.Parent.TryGetComponent<WingPanel>(out var wing)) return;
@@ -80,6 +88,9 @@ public class ControlSurface : Component, IUpdateableComponent, IComponentGizmoDr
     public void Update()
     {
         float input = 0f;
+
+        var ax = this.ControllerBind;
+        if (ax.HasValue) input += Controller.AxisValue(ax.Value.Axis) * (ax.Value.Invert ? -1f : 1f);
         if (Keyboard.KeyHeld(this.PositiveBtn)) input++;
         if (Keyboard.KeyHeld(this.NegativeBtn)) input--;
 

@@ -21,6 +21,7 @@ public class Engine : Component, IUpdateableComponent, ISimulatedComponent, ICom
         float ti = 0f;
         if (Keyboard.KeyHeld(KeyCode.LeftShift)) ti++;
         if (Keyboard.KeyHeld(KeyCode.LeftControl)) ti--;
+        ti += Controller.AxisValue(ControllerAxis.TriggerRight) - Controller.AxisValue(ControllerAxis.TriggerLeft);
         this.throttle = Math.Clamp(this.throttle + (ti * Time.DeltaTime), 0f, 1f);
     }
 

@@ -22,7 +22,7 @@ public class WheelBrakeInput : Component, IUpdateableComponent, IStartListener
     {
         if (this.Entity.TryGetComponent<WheelCollider>(out var wc))
         {
-            float input = Keyboard.KeyHeld(KeyCode.B) ? 1f : 0f;
+            float input = (Keyboard.KeyHeld(KeyCode.B) || Controller.ButtonHeld(ControllerButton.B)) ? 1f : 0f;
             this._smoothInput = MathW.MoveTowards(this._smoothInput, input, this.ApplySpeed * Time.DeltaTime);
             wc.BrakeTorque = this._smoothInput * this.MaxTorque;
         }

@@ -22,7 +22,7 @@ public class WheelSteerInput : Component, IUpdateableComponent, IStartListener
     {
         if (this.Entity.TryGetComponent<WheelCollider>(out var wc))
         {
-            float input = 0f;
+            float input = Controller.AxisValue(ControllerAxis.LeftX);
             if (Keyboard.KeyHeld(KeyCode.Q)) input -= 1f;
             if (Keyboard.KeyHeld(KeyCode.E)) input = 1f;
             if ((input == 1f && this._smoothInput < 0f) || (input == -1f && this._smoothInput > 0f)) this._smoothInput = 0f;
