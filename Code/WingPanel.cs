@@ -18,6 +18,8 @@ public class WingPanel : Component, IComponentGizmoDrawer, ISimulatedComponent, 
 
     private List<(Vector3 Pos, Vector3 Vec, Vector4 Col)> debugLinesRbSpace = new();
 
+    private List<ControlSurface> surfaces = new();
+
     public void DrawGizmos()
     {
         this.DebugDrawLocalQuad(new(0f, 0f, 0.5f * this.rootChord), new(0f, 0f, -0.5f * this.rootChord), new(this.span, 0f, -0.5f * this.tipChord + this.sweep), new(this.span, 0f, 0.5f * this.tipChord + this.sweep), new(0f, 1f, 0f, 1f));
@@ -41,6 +43,12 @@ public class WingPanel : Component, IComponentGizmoDrawer, ISimulatedComponent, 
         if (!this.Entity.Parent.IsValid || !this.Entity.Parent.TryGetComponent<RigidBody>(out var rb)) return;
         var rbLocalPose = this.Entity.LocalTransform;
 
+        this.surfaces.Clear();
+        foreach (var ent in this.Entity)
+        {
+            if (ent.TryGetComponent<ControlSurface>(out var surf)) this.surfaces.Add(surf);
+        }
+
         this.debugLinesRbSpace.Clear();
 
         Vector3 rootQc = rbLocalPose.TransformPoint(new(0f, 0f, 0.25f * this.rootChord));
@@ -60,6 +68,17 @@ public class WingPanel : Component, IComponentGizmoDrawer, ISimulatedComponent, 
 
             float sampleSpan = sampleStart + sampleWidth * i;
             float sampleT = sampleSpan / this.span;
+
+            float alphaOffset = 0f;
+            for (int cs = 0; cs < this.surfaces.Count; cs++)
+            {
+                var surf = this.surfaces[cs];
+                if (surf.IsPresent(sampleSpan))
+                {
+                    alphaOffset -= MathF.Sqrt(surf.ChordPercent(sampleSpan)) * surf.Deflection;
+                }
+            }
+
             var qcPos = Vector3.Lerp(rootQc, tipQc, sampleT);
             var vel = rb.GetVelocityAtPointLocal(qcPos);
             float speed = vel.Length;
@@ -68,7 +87,7 @@ public class WingPanel : Component, IComponentGizmoDrawer, ISimulatedComponent, 
             var velFwd = Vector3.Dot(velNorm, fwd);
             var velUp = Vector3.Dot(velNorm, up);
             var alpha = MathF.Atan2(-velUp, velFwd);
-            var (cl, cd) = LiftCurve.Default.Sample(alpha);
+            var (cl, cd) = LiftCurve.Default.Sample(alpha + alphaOffset);
 
             float forceScale = sampleWidth * MathFX.Lerp(this.rootChord, this.tipChord, sampleT) * speed * speed * AirDensity;
             Vector3 dragDir = -velNorm;
@@ -88,7 +107,7 @@ public class WingPanel : Component, IComponentGizmoDrawer, ISimulatedComponent, 
         this.debugLinesRbSpace?.Add((pos, vec, color));
     }
 
-    private void DebugDrawLocalQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector4 color)
+    internal void DebugDrawLocalQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector4 color)
     {
         var t = this.Entity.Transform;
         a = t.TransformPoint(a);
